@@ -106,6 +106,11 @@ public class MainManager : MonoBehaviour
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                
             }
+            else if (highScore > scoreJson)
+            {
+                SaveCLicked();
+            }
+            
             
             
 
@@ -153,11 +158,7 @@ public class MainManager : MonoBehaviour
             bestScoreJson.text = highScore.ToString();
             PlayerPrefs.SetInt("HighScore", highScore);
         }
-        else if(highScore > scoreJson)
-        {
-            Persistence.instance.nameWithJson.ToString();
-            SaveCLicked();
-        }
+       
             
 
         
