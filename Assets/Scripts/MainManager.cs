@@ -17,8 +17,8 @@ public class MainManager : MonoBehaviour
     public TextMeshProUGUI bestScoreJson;
     public TextMeshProUGUI scoreWithJson;
     public int scoreJson;
-    public int highScore;
-
+    public int highScores;
+    
 
     public Brick BrickPrefab;
     public int LineCount = 6;
@@ -41,15 +41,15 @@ public class MainManager : MonoBehaviour
 
     private void Awake()
     {
-        
 
+       
         LoadClicked();
         
-        highScore = PlayerPrefs.GetInt("HighScore", GameScore);
-        bestScoreJson.text = highScore.ToString();
+        highScores = PlayerPrefs.GetInt("HighScore", GameScore);
+        bestScoreJson.text = highScores.ToString();
         //playerNameJson.text = Persistence.instance.nameWithJson.text;
 
-
+        
 
     }
 
@@ -58,8 +58,13 @@ public class MainManager : MonoBehaviour
 
     void Start()
     {
-
+        if (highScores > scoreJson)
+        {
+            playerNameJson.text = Persistence.instance.nameWithJson.text;
+            SaveCLicked();
+        }
         
+
 
 
         const float step = 0.6f;
@@ -86,7 +91,9 @@ public class MainManager : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space))
             {
 
-                
+
+                SetNameAndScore();
+                playerNameJson.text = Persistence.instance.nameWithJson.text;
                 m_Started = true;
                 float randomDirection = Random.Range(-1.0f, 1.0f);
                 Vector3 forceDir = new Vector3(randomDirection, 1, 0);
@@ -98,18 +105,17 @@ public class MainManager : MonoBehaviour
             }
         }
         else if (m_GameOver)
+
         {
+            
             if (Input.GetKeyDown(KeyCode.Space))
             {
-                
+
                 
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
                
             }
-            else if (highScore > scoreJson)
-            {
-                SaveCLicked();
-            }
+            
             
             
             
@@ -152,11 +158,12 @@ public class MainManager : MonoBehaviour
 
     public void UpdateHighScore()
     {
-        if (scoreJson > highScore)
+        if (scoreJson > highScores)
         {
-            highScore = scoreJson;
-            bestScoreJson.text = highScore.ToString();
-            PlayerPrefs.SetInt("HighScore", highScore);
+            highScores = scoreJson;
+            bestScoreJson.text = highScores.ToString();
+            PlayerPrefs.SetInt("HighScore", highScores);
+            
         }
        
             
@@ -172,15 +179,15 @@ public class MainManager : MonoBehaviour
 
     public void GameOver()
     {
-       
 
+        
         SetJsonPlayerInfo();
         UpdateHighScore();
         m_GameOver = true;
         GameOverText.SetActive(true);
-        bestScoreJson.text = highScore.ToString();
+        bestScoreJson.text = highScores.ToString();
+        SetNameAndScore();
        
-
 
 
     }
@@ -221,7 +228,7 @@ public class MainManager : MonoBehaviour
 
     public void SetNameAndScore()
     {
-
+        Persistence.instance.SetName();
     }
 
 
@@ -242,6 +249,15 @@ public class MainManager : MonoBehaviour
 
         
 
+    }
+
+
+    public void SafeIfBestScore()
+    {
+        if (highScores > scoreJson)
+        {
+            SaveCLicked();
+        }
     }
 
     public void QuitGame()
