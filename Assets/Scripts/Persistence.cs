@@ -13,12 +13,12 @@ public class Persistence : MonoBehaviour
 
     
     public static  Persistence instance;
-    public int  highScore;
     
-    public TextMeshProUGUI highScoreWithJson, nameWithJson;
-   
-
-
+    
+    public TextMeshProUGUI highScoreWithJson, nameWithJson, scorejson;
+    public int highScore;
+    public int scoreJson;
+    
 
 
     public TMP_InputField inputField;
@@ -38,8 +38,11 @@ public class Persistence : MonoBehaviour
         instance = this;
         DontDestroyOnLoad(gameObject);
         LoadPlayer();
-        LoadNameJson();
-        
+
+
+
+
+
     }
     
 
@@ -48,32 +51,31 @@ public class Persistence : MonoBehaviour
 
     private void Start()
     {
-       
+
+        highScoreWithJson.text.ToString();
         
-
-
-        if (Persistence.instance != null)
-        {
-            //Persistence.instance.LoadPlayer();
-
-
-            textBack.text = PlayerPrefs.GetInt("HighScore").ToString();
-            //highScoreWithJson.text = highScore.ToString();
-            
-
-        }
-
+        textBack.text = PlayerPrefs.GetInt("HighScore").ToString();    // puntaje pref en pantalla al iniciar el juego
+        highScoreWithJson.text = highScore.ToString();
+        scorejson.text = instance.scorejson.ToString();
+        highScoreWithJson.text = Persistence.instance.highScoreWithJson.text;
+        
     }
 
     public void SetName()
     {
         display_Player_Name.text = inputField.text;
-        nameWithJson.text = inputField.text;
+        
 
     }
+    public void SetNameWithJson()
+    {
+        nameWithJson.text = inputField.text;
+    }
 
-    
-    
+
+
+
+
     public void SavePlayer()
     {
         SaveData data = new SaveData();
@@ -81,7 +83,9 @@ public class Persistence : MonoBehaviour
         data.nameWithJson = nameWithJson.text;
         data.highScoreWithJson = highScoreWithJson.text;
         data.highScore = highScore;
-
+        data.scorejson = scorejson.text;
+        data.scoreJson = scoreJson;
+        //Anadida recientemente para testear score points en le menu principal
         string json = JsonUtility.ToJson(data);
         File.WriteAllText(Application.persistentDataPath + "/savefile.json", json);
 
@@ -98,14 +102,14 @@ public class Persistence : MonoBehaviour
             nameWithJson.text = data.nameWithJson;
             highScoreWithJson.text = data.highScoreWithJson;
             highScore = data.highScore;
-
+            scoreJson = data.scoreJson;
+            scorejson.text = data.scorejson;
         }
     }
 
-    
+
     public void SaveNameJson()
     {
-        
         SavePlayer();
     }
 
@@ -114,17 +118,7 @@ public class Persistence : MonoBehaviour
         LoadPlayer();
     }
 
-   
-    
-    
-
-    
-
-
 }
-
-
-
 
 
 [System.Serializable]  // we create a class to save only we want to save not everithing in the Monobehavior Class
@@ -133,7 +127,9 @@ public class SaveData
     public string display_Player_Name;
     public string highScoreWithJson;
     public string nameWithJson;
+    public string scorejson;
     public int highScore;
-
+    public int highScores;
+    public int scoreJson;
 }
    
